@@ -1,0 +1,37 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jade Dragon Quest">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#16324a"/>
+      <stop offset="0.5" stop-color="#1A1A2E"/>
+      <stop offset="1" stop-color="#0d2b22"/>
+    </linearGradient>
+    <radialGradient id="pearl" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#FFF6D5"/>
+      <stop offset="0.45" stop-color="#FFD54F"/>
+      <stop offset="1" stop-color="#C9972B"/>
+    </radialGradient>
+    <linearGradient id="jade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7CFFB2"/>
+      <stop offset="1" stop-color="#1f8a5b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed background (safe for maskable circle crop) -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- Jade ring -->
+  <circle cx="256" cy="256" r="176" fill="none" stroke="url(#jade)" stroke-width="14" opacity="0.85"/>
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#FFD54F" stroke-width="4" opacity="0.5"/>
+
+  <!-- Glowing pearl -->
+  <circle cx="256" cy="232" r="92" fill="url(#pearl)"/>
+  <circle cx="226" cy="204" r="26" fill="#FFFFFF" opacity="0.55"/>
+
+  <!-- Dragon emoji centered over the pearl (renders via platform emoji font) -->
+  <text x="256" y="248" font-size="150" text-anchor="middle" dominant-baseline="central">🐉</text>
+
+  <!-- Hanzi 龙 at the base -->
+  <text x="256" y="430" font-size="78" text-anchor="middle" dominant-baseline="central"
+        font-family="'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif"
+        font-weight="700" fill="#FFD54F">龙</text>
+</svg>

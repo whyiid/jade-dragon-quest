@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Jade Dragon Quest</title>
+  <meta name="description" content="Jade Dragon Quest — a Mandarin learning adventure." />
+  <meta name="theme-color" content="#1A1A2E" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Fonts: Noto Sans SC (hanzi) + Baloo 2 (UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app" data-theme="worldmap"></div>
+
+  <!-- Core (order matters) -->
+  <script src="vocab-data.js"></script>
+  <script src="audio.js"></script>
+  <script src="progress.js"></script>
+  <script src="sidekick.js"></script>
+
+  <!-- Levels -->
+  <script src="levels/level1-metal.js"></script>
+  <script src="levels/level2-water.js"></script>
+  <script src="levels/level3-wood.js"></script>
+  <script src="levels/level4-fire.js"></script>
+  <script src="levels/level5-dragon.js"></script>
+  <script src="bonus-zodiac.js"></script>
+
+  <!-- Engine boots last -->
+  <script src="app.js"></script>
+</body>
+</html>

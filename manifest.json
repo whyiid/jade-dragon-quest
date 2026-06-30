@@ -1,0 +1,21 @@
+{
+  "name": "Jade Dragon Quest",
+  "short_name": "JadeDragon",
+  "description": "A Mandarin learning adventure — the Five Elements Quest.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1A1A2E",
+  "theme_color": "#1A1A2E",
+  "lang": "en",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
