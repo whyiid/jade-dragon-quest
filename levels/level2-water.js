@@ -65,13 +65,19 @@ window.JDQ.levels = window.JDQ.levels || {};
       async function listenOnce() {
         if (solved || mic.classList.contains('listening')) return;
         mic.classList.add('listening');
+        const noteWas = note.textContent;
         try {
-          const res = await JDQ.audio.listen(() => {});
+          const res = await JDQ.audio.listen((st) => {
+            if (st === 'listening') note.textContent = '🗣️ Say it now!';
+            else if (st === 'processing') note.textContent = '⏳ …';
+          });
           mic.classList.remove('listening');
+          note.textContent = noteWas;
           if (JDQ.audio.matchSpoken(res, word)) return pass();
           miss();
         } catch (e) {
           mic.classList.remove('listening');
+          note.textContent = noteWas;
           const code = (e && e.code) || 'error';
           if (code === 'unsupported') return showTypeMode();
           // Mic permission blocked on the device — mic will never work; fall back.

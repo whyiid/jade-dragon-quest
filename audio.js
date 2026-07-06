@@ -143,7 +143,12 @@ window.JDQ = window.JDQ || {};
       let done = false;
       let hardTimer;
 
-      const finish = () => { clearTimeout(hardTimer); activeRec = null; };
+      const finish = () => {
+        clearTimeout(hardTimer);
+        activeRec = null;
+        // Give the audio output route back to Web Audio (SFX) after listening.
+        try { if (actx && actx.state === 'suspended') actx.resume(); } catch (e) {}
+      };
 
       rec.onstart = () => onState && onState('listening');
       rec.onresult = (ev) => {
@@ -172,6 +177,9 @@ window.JDQ = window.JDQ || {};
         // Stop any playing clip so the mic doesn't pick up our own audio.
         try { if (currentAudio) { currentAudio.pause(); currentAudio = null; } } catch (e) {}
         try { speechSynthesis.cancel(); } catch (e) {}
+        // Release the audio route — a live AudioContext can starve the mic on
+        // Android (recognizer starts but captures nothing -> no-speech).
+        try { if (actx && actx.state === 'running') actx.suspend(); } catch (e) {}
         try { rec.start(); } catch (e) { activeRec = null; reject({ code: 'start-failed' }); return; }
         // Ask the API to stop capturing after 6s (fires onend normally).
         setTimeout(() => { try { rec.stop(); } catch (e) {} }, 6000);
