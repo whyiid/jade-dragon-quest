@@ -72,10 +72,16 @@ window.JDQ.levels = window.JDQ.levels || {};
           miss();
         } catch (e) {
           mic.classList.remove('listening');
-          if (e && e.code === 'unsupported') return showTypeMode();
-          // no-speech / aborted — don't punish, just nudge
+          const code = (e && e.code) || 'error';
+          if (code === 'unsupported') return showTypeMode();
+          // Mic permission blocked on the device — mic will never work; fall back.
+          if (code === 'not-allowed' || code === 'service-not-allowed') {
+            api.ui.toast('🎤 blocked — type instead', 'bad');
+            return showTypeMode();
+          }
+          // no-speech / aborted / network — don't punish; show code to diagnose.
           JDQ.audio.sfx('tap');
-          api.ui.toast("Didn't hear you — try again!", '');
+          api.ui.toast(`Didn't hear you (${code}) — try again!`, '');
         }
       }
 

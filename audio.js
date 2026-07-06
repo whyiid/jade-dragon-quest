@@ -113,10 +113,21 @@ window.JDQ = window.JDQ || {};
     return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
   }
 
-  // listen() resolves with { transcript, supported } or rejects on error.
-  // onState(state) callback: 'listening' | 'processing' | 'end'
-  function listen(onState) {
+  // listen() resolves with { transcript } or rejects on error.
+  // Auto-retries ONCE on no-speech/aborted — an 8-yr-old often hesitates and
+  // Android closes the mic before they start; a second window fixes most misses.
+  function listen(onState) { return listenAttempt(onState, 0); }
+
+  function listenAttempt(onState, tries) {
     return new Promise((resolve, reject) => {
+      // On retryable failures, restart instead of rejecting (once).
+      const fail = (code) => {
+        if ((code === 'no-speech' || code === 'aborted') && tries < 1) {
+          setTimeout(() => listenAttempt(onState, tries + 1).then(resolve, reject), 350);
+        } else {
+          reject({ code });
+        }
+      };
       // Abort any in-flight recognition — two live instances conflict on Android.
       if (activeRec) { try { activeRec.abort(); } catch (e) {} activeRec = null; }
 
@@ -146,13 +157,13 @@ window.JDQ = window.JDQ || {};
       };
       rec.onerror = (ev) => {
         finish();
-        if (!done) reject({ code: ev.error || 'error' });
+        if (!done) fail(ev.error || 'error');
       };
       // onend always fires — if no result yet, treat as no-speech
       rec.onend = () => {
         finish();
         onState && onState('end');
-        if (!done) reject({ code: 'no-speech' });
+        if (!done) fail('no-speech');
       };
 
       // 300ms: Android needs time to reset audio subsystem between calls.
