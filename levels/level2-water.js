@@ -49,6 +49,12 @@ window.JDQ.levels = window.JDQ.levels || {};
       speakWrap.appendChild(mic);
       speakWrap.appendChild(note);
 
+      // Self-confirm — mic on Android is unreliable, so the child is never stuck:
+      // listen, say it out loud, tap to advance. Mic stays as a bonus above.
+      const saidBtn = JDQ.ui.el('button', 'btn', '🗣️ I said it! ›');
+      saidBtn.style.marginTop = '8px';
+      speakWrap.appendChild(saidBtn);
+
       const typeToggle = JDQ.ui.el('button', 'btn ghost', '⌨️ Type instead');
       typeToggle.style.marginTop = '10px';
 
@@ -59,6 +65,7 @@ window.JDQ.levels = window.JDQ.levels || {};
       setTimeout(() => JDQ.audio.playWord(word.hanzi), 300);
 
       mic.addEventListener('click', listenOnce);
+      saidBtn.addEventListener('click', () => { if (!solved) pass(); });
       typeToggle.addEventListener('click', showTypeMode);
       if (!supported) showTypeMode();
 
