@@ -13,6 +13,7 @@ window.JDQ = window.JDQ || {};
   const clipUrl = (word) => `audio/${encodeURIComponent(word)}.mp3`;
 
   let currentAudio = null;
+  let activeRec = null; // abort previous recognition before starting new
 
   // --- Word pronunciation -------------------------------------------------
   async function playWord(hanzi) {
@@ -116,6 +117,9 @@ window.JDQ = window.JDQ || {};
   // onState(state) callback: 'listening' | 'processing' | 'end'
   function listen(onState) {
     return new Promise((resolve, reject) => {
+      // Abort any in-flight recognition — two live instances conflict on Android.
+      if (activeRec) { try { activeRec.abort(); } catch (e) {} activeRec = null; }
+
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SR) { reject({ code: 'unsupported' }); return; }
       let rec;
@@ -124,10 +128,11 @@ window.JDQ = window.JDQ || {};
       rec.lang = 'cmn-Hans-CN';
       rec.interimResults = false;
       rec.maxAlternatives = 3;
+      activeRec = rec;
       let done = false;
       let hardTimer;
 
-      const finish = () => clearTimeout(hardTimer);
+      const finish = () => { clearTimeout(hardTimer); activeRec = null; };
 
       rec.onstart = () => onState && onState('listening');
       rec.onresult = (ev) => {
@@ -153,7 +158,10 @@ window.JDQ = window.JDQ || {};
       // 300ms: Android needs time to reset audio subsystem between calls.
       // Without this, consecutive recognitions alternate succeed/fail.
       setTimeout(() => {
-        try { rec.start(); } catch (e) { reject({ code: 'start-failed' }); return; }
+        // Stop any playing clip so the mic doesn't pick up our own audio.
+        try { if (currentAudio) { currentAudio.pause(); currentAudio = null; } } catch (e) {}
+        try { speechSynthesis.cancel(); } catch (e) {}
+        try { rec.start(); } catch (e) { activeRec = null; reject({ code: 'start-failed' }); return; }
         // Ask the API to stop capturing after 6s (fires onend normally).
         setTimeout(() => { try { rec.stop(); } catch (e) {} }, 6000);
         // 12s hard reject for devices where onend never fires (e.g. Huawei no-GMS).

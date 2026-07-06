@@ -63,7 +63,7 @@ window.JDQ.levels = window.JDQ.levels || {};
       if (!supported) showTypeMode();
 
       async function listenOnce() {
-        if (solved) return;
+        if (solved || mic.classList.contains('listening')) return;
         mic.classList.add('listening');
         try {
           const res = await JDQ.audio.listen(() => {});
